@@ -3,7 +3,7 @@
 concordances
 ============
 
-Corpus export files often come in formats that require certain modifications if you want to import them into a spreadsheet program or if you want to read them into R as a data frame. The aim of *concordances* is to automatize this process. All you need is a corpus export file, and concordances will (try to) convert it for you. Currently it can handle export files from
+Corpus export files often come in formats that require certain modifications if you want to import them into a spreadsheet program or if you want to read them into R as a data frame. The aim of *concordances* is to automatize this process. All you need is a corpus export file, and *concordances* will (try to) convert it for you. Currently it can handle export files from
 
 -   the corpus workbench / CQP (should be largely compatible with CQPweb as well): **getCWB**
 -   NoSketchEngine (in particular, the NSE implementation of the COW corpora): **getNSE**
