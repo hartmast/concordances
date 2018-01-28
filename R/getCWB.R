@@ -12,19 +12,22 @@ getCWB <- function(filename, dt = TRUE) {
   # read file
   tx <- fread(filename, fill = T, sep="\n", encoding = "UTF-8", header = F, stringsAsFactors = F, quote = "")
 
+  # replace non-valid UTF-8
+  tx[, V1 := sapply(tx[,1], function(m) iconv(m, "UTF-8", "UTF-8", sub=''))]
+
   # check if there are any metadata (using sample of firt 20 lines)
   n <- ifelse(nrow(tx)>=20, 20, nrow(tx))
   if(length(grep(">:", tx[1:n,V1]))>=n) {
     # find lines with multiple ": <" (i.e. a : before the keyword) to avoid errors
     rpl <- grep("\\: \\<(?=.*\\: \\<)", tx[,V1], perl = T)
-    
+
     if(length(rpl>0)) {
       for(r in rpl) {
         tx[r, V1 := paste(paste(.splitter(tx[r,V1], ": <")[1:2], collapse=": <", sep=""),
                           .splitter(tx[r,V1], ": <")[3], sep = "INSERTCOLONHERE <", collapse = "")]
       }
     }
-    
+
 
     # replace < and >
     tx[,V1 := gsub(": <|><|>:", "SPLITHERE", as.character(V1))]
@@ -56,9 +59,9 @@ getCWB <- function(filename, dt = TRUE) {
 
   # check if left and right context are present
   if(length(grep("^<|>$", x[,Text]))<nrow(x)) {
-    
+
     cat("splitting concordance up into columns...")
-    
+
     # split up into Left, Right, Key
     x[, Left := trimws(gsub("<.*", "", Text))]
     x[, Key := trimws(gsub(".*<|>.*", "", Text))]
@@ -84,8 +87,8 @@ getCWB <- function(filename, dt = TRUE) {
                                         function(i) length(unlist(strsplit(some_tokens[[j]][i],
                                                                            "(?<!^)/", perl = T))))))
 
-  # print warning if tags differ in the number of tags
-  if(length(unique(l))>1) {
+  # print warning if tokens differ in the number of tags
+  if(length(unique(as.vector(l)))>1) {
     warning("Number of tags may be inaccurate. Please check if slashes (/) occur in annotations, e.g. by searching for pos="/" in CQP")
   }
 
@@ -139,13 +142,13 @@ getCWB <- function(filename, dt = TRUE) {
     # update column order
     new_order <- gsub("Keyword", "Key", gsub("Key$", "Key_with_anno", gsub("Key_with_anno", "Keyword", colnames(x))))
     data.table::setcolorder(x, new_order)
-    
+
     # replace INSERTCOLONHERE
     if(length(which(colnames(x)=="Left"))>0) {
       x[, Left := gsub("INSERTCOLONHERE", ":", Left)]
     }
-    
-    
+
+
 
   }
 
