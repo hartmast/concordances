@@ -29,9 +29,25 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, ...) {
   con <- file(filename, encoding = "latin1")
   myCosmas <- scan(con, what="character", sep="\n")
   close(con)
-  myKWIC <- myCosmas[(grep("KWIC", myCosmas)[1]+1):(grep("^Belege", myCosmas)-1)]
+
+  # check export format: KWIC only, KWIC + full text, ...
+  if(length(grep("^Belege", myCosmas)) > 0) {
+    file_end <- "^Belege"
+  } else if (length(grep("^Belege", myCosmas)) == 0 &
+             length(grep("^Schbegriff-Expansionslisten", myCosmas)) > 0) {
+    file_end <- "^Suchbegriff-Expansionslisten"
+  } else {
+    file_end <- NA
+  }
+
+  if(!is.na(file_end)) {
+    myKWIC <- myCosmas[(grep("KWIC", myCosmas)[1]+1):(grep(file_end, myCosmas)-1)]
+  } else {
+    myKWIC <- grep("<B>", myCosmas, value = T)
+  }
+
   rm(myCosmas)
-  myKWIC <- .selectsubset(myKWIC, grep("_____", myKWIC)+1)
+  myKWIC <- .selectsubset(myKWIC, grep("_____", myKWIC)[1]+1)
 
 
 
