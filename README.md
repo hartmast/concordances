@@ -23,6 +23,7 @@ You can install *concordances* from github with:
 if(!is.element("devtools", installed.packages())) {
   install.packages("devtools")
 }
+
 devtools::install_github("hartmast/concordances")
 ```
 
