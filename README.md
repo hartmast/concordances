@@ -18,7 +18,9 @@ Installation
 You can install *concordances* from github with:
 
 ``` r
-# install.packages("devtools")
+if(!is.element("devtools", installed.packages())) {
+  install.packages("devtools")
+}
 devtools::install_github("hartmast/concordances")
 ```
 
@@ -32,11 +34,17 @@ library(concordances)
 getCWB("path/to/file.txt") # do not run
 ```
 
+Note that on Windows machines, you usually have to use double backslashes in file paths, e.g.
+
+``` r
+getCWB("path\\to\\file.txt") # do not run
+```
+
 If you want to open the resulting dataframes in a spreadsheet, e.g. for annotating them, you can easily export them using write.table:
 
 ``` r
 myText <- getCWB("path/to/file.txt")
-write.table(myText, "myText.txt", sep = "\t", row.names = F, quote = F, 
+write.table(myText, "myText.tsv", sep = "\t", row.names = F, quote = F, 
             fileEncoding = "UTF-8")
 ```
 
