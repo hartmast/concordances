@@ -20,7 +20,7 @@ getNSE <- function(filename, filename_new, tags = TRUE, convert = FALSE) {
   tx <- scan(filename, what="character", sep="\n", encoding = "UTF-8")
 
   # strip lines with metadata
-  md <- grep("^#", tx)
+  md <- grep("^# ", tx)
   if(length(md)>0) tx <- tx[-md]
 
   # get metadata

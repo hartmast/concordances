@@ -8,4 +8,4 @@ r_github_packages:
   - r-lib/covr
 
 after_success:
-  - Rscript -e 'covr::codecov()'
+  - Rscript -e 'covr::codecov(token = "03980312-0189-42f5-8b96-bb7d9eb2f4b7")'

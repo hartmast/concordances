@@ -67,8 +67,7 @@ getWACKY <- function(filename, tags=c("display", "omit", "column"), XML=TRUE) {
     }
 
 
-
-    current.df <- as.data.frame(matrix(unlist(lapply(1:1000, .getCurrentLine, tags=tags)), byrow = T, ncol=length(.getCurrentLine(1, tags=tags))),
+    current.df <- as.data.frame(matrix(unlist(lapply(1:length(grep("<kwic>", wackxml)), .getCurrentLine, tags=tags)), byrow = T, ncol=length(.getCurrentLine(1, tags=tags))),
                                 stringsAsFactors = FALSE)
     colnames(current.df)[1:4] <- c("Source", "Left_Context", "Key", "Right_Context")
     if(length(current.df)>4) {

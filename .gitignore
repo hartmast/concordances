@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+.travis.yml
 README.Rmd
 package_commands.txt
 inst/doc
