@@ -4,3 +4,4 @@
 .Ruserdata
 README.Rmd
 package_commands.txt
+inst/doc
