@@ -13,8 +13,8 @@
 #' @param ... arguments passed on from other methods
 #' @return A KWIC data frame.
 
+# getCOSMAS function
 getCOSMAS <- function(filename, merge=FALSE, years=FALSE, ...) {
-
   filename <- filename
 
   if(length(grep("DE|Ger.*|ger.*", Sys.getlocale()))<1) {
@@ -43,11 +43,14 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, ...) {
   if(!is.na(file_end)) {
     myKWIC <- myCosmas[(grep("KWIC", myCosmas)[1]+1):(grep(file_end, myCosmas)-1)]
   } else {
-    myKWIC <- grep("<B>", myCosmas, value = T)
+    myKWIC <- myCosmas[(grep("KWIC", myCosmas)[1]+1):(length(myKWIC))]
   }
 
   rm(myCosmas)
+
   myKWIC <- .selectsubset(myKWIC, grep("_____", myKWIC)[1]+1)
+
+
 
 
 
@@ -63,15 +66,15 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, ...) {
 
     dataSource <- gsub("[:alnum:]* .*", "", myKWIC[i])
     currentLine <- gsub("^[[:alnum:]]* *", "", myKWIC[i])
-    left <- .nospaces(gsub("<B>.*", "", currentLine))
-    right <- .nospaces(gsub(".*</>", "", currentLine))
-    getKeywords <- .nospaces(.selectsubset(.splitter(currentLine, "<B>"), 2))
+    left <- trimws(gsub("<B>.*", "", currentLine))
+    right <- trimws(gsub(".*</>", "", currentLine))
+    getKeywords <- trimws(.selectsubset(.splitter(currentLine, "<B>"), 2))
 
     if (key=="combine") {
       keyword <- gsub("</>", "", paste(c(getKeywords[1:(length(getKeywords)-1)], .splitter(getKeywords[length(getKeywords)], "</>")[1]),
                                        sep="", collapse=" "))
     } else if (key=="split") {
-      keyword <- .nospaces(.splitter(getKeywords, "</>")[1:(length(.splitter(getKeywords, "</>"))-1)])
+      keyword <- trimws(.splitter(getKeywords, "</>")[1:(length(.splitter(getKeywords, "</>"))-1)])
     }
 
 
@@ -157,6 +160,8 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, ...) {
       for(j in 1:(length(yr)-1)) {
         kwic$Year[yr[j]:(yr[j+1]-1)] <- kwic$Source[yr[j]]
       }
+
+      kwic[(yr[length(yr)]+1):nrow(kwic),]$Year <- kwic$Source[yr[length(yr)]]
 
       kwic <- kwic[-yr,]
 
