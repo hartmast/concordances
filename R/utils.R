@@ -1,4 +1,4 @@
-# These functions are shortcuts for combinations of functions that I 
+# These functions are shortcuts for combinations of functions that I
 # use very often in the package.
 # They are not needed outside of the package.
 
@@ -20,11 +20,5 @@
 
   return(vector[start:end])
 
-}
-
-
-# remove spaces at the beginning and at the end of character strings
-.nospaces <- function(x) {
-  return(gsub("^ *| *$", "", x))
 }
 

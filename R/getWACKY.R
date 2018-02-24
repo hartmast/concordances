@@ -52,7 +52,7 @@ getWACKY <- function(filename, tags=c("display", "omit", "column"), XML=TRUE) {
       right <- gsub("^ | *$", "", gsub(".*<right_context>|</right_context>.*", "", wackxml[start_tags[i]+1]))
       currentKey <- .splitter(key, "  ")
       NumberOfTags <- length(.splitter(currentKey[1], "/"))
-      AllTags <- sapply(1:NumberOfTags, function(k) paste(sapply(1:length(currentKey), function(j) .nospaces(.splitter(currentKey[j], "/"))[k]),
+      AllTags <- sapply(1:NumberOfTags, function(k) paste(sapply(1:length(currentKey), function(j) trimws(.splitter(currentKey[j], "/"))[k]),
                                                           sep="", collapse=" "))
 
       # assemble KWIC dataframe

@@ -1,6 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Build Status](https://travis-ci.org/hartmast/concordances.svg?branch=master)](https://travis-ci.org/hartmast/concordances)
+[![Build Status](https://travis-ci.org/hartmast/concordances.svg?branch=master)](https://travis-ci.org/hartmast/concordances) [![codecov](https://codecov.io/gh/hartmast/concordances/branch/master/graph/badge.svg)](https://codecov.io/gh/hartmast/concordances)
 
 concordances
 ============

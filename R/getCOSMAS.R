@@ -34,7 +34,7 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, ...) {
   if(length(grep("^Belege", myCosmas)) > 0) {
     file_end <- "^Belege"
   } else if (length(grep("^Belege", myCosmas)) == 0 &
-             length(grep("^Schbegriff-Expansionslisten", myCosmas)) > 0) {
+             length(grep("^Suchbegriff-Expansionslisten", myCosmas)) > 0) {
     file_end <- "^Suchbegriff-Expansionslisten"
   } else {
     file_end <- NA
@@ -43,7 +43,7 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, ...) {
   if(!is.na(file_end)) {
     myKWIC <- myCosmas[(grep("KWIC", myCosmas)[1]+1):(grep(file_end, myCosmas)-1)]
   } else {
-    myKWIC <- myCosmas[(grep("KWIC", myCosmas)[1]+1):(length(myKWIC))]
+    myKWIC <- myCosmas[(grep("KWIC", myCosmas)[1]+1):(max(grep("<B>", myCosmas)))]
   }
 
   rm(myCosmas)
@@ -58,11 +58,7 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, ...) {
   ## function for getting one line ##
   ###################################
 
-  getCurrentLine <- function(i, key=c("combine", "split")) {
-
-    if(missing(key)) {
-      key <- "split"
-    }
+  getCurrentLine <- function(i) {
 
     dataSource <- gsub("[:alnum:]* .*", "", myKWIC[i])
     currentLine <- gsub("^[[:alnum:]]* *", "", myKWIC[i])
@@ -70,13 +66,8 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, ...) {
     right <- trimws(gsub(".*</>", "", currentLine))
     getKeywords <- trimws(.selectsubset(.splitter(currentLine, "<B>"), 2))
 
-    if (key=="combine") {
-      keyword <- gsub("</>", "", paste(c(getKeywords[1:(length(getKeywords)-1)], .splitter(getKeywords[length(getKeywords)], "</>")[1]),
-                                       sep="", collapse=" "))
-    } else if (key=="split") {
-      keyword <- trimws(.splitter(getKeywords, "</>")[1:(length(.splitter(getKeywords, "</>"))-1)])
-    }
 
+    keyword <- trimws(.splitter(getKeywords, "</>")[1:(length(.splitter(getKeywords, "</>"))-1)])
 
     return(c(dataSource, left, keyword, right))
   }

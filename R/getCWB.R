@@ -89,7 +89,7 @@ getCWB <- function(filename, dt = TRUE) {
 
   # print warning if tokens differ in the number of tags
   if(length(unique(as.vector(l)))>1) {
-    warning("Number of tags may be inaccurate. Please check if slashes (/) occur in annotations, e.g. by searching for pos="/" in CQP")
+    warning("Number of tags may be inaccurate. Please check if slashes (/) occur in annotations, e.g. by searching for pos=\"/\" in CQP")
   }
 
   # maximum of l becomes number of columns
@@ -131,9 +131,14 @@ getCWB <- function(filename, dt = TRUE) {
       cat("Stripping tags. This can take a while, please be patient.")
     }
 
-    # strip tags from left and right context
-    x[, Left := sapply(1:nrow(x), function(i) gsub("SSSLASSSH", "/", gsub("(/)(.*?)(?= )|/.*$", "", gsub(" //", " SSSLASSSH/", x[i,Left]), perl=T)))]
-    x[, Right := sapply(1:nrow(x), function(i) gsub("SSSLASSSH", "/", gsub("(/)(.*?)(?= )|/.*$", "", gsub(" //", " SSSLASSSH/", x[i,Right]), perl=T)))]
+    # strip tags from left and right context, if present
+    if(is.element("Left", colnames(x))) {
+      x[, Left := sapply(1:nrow(x), function(i) gsub("SSSLASSSH", "/", gsub("(/)(.*?)(?= )|/.*$", "", gsub(" //", " SSSLASSSH/", x[i,Left]), perl=T)))]
+    }
+
+    if(is.element("Right", colnames(x))) {
+      x[, Right := sapply(1:nrow(x), function(i) gsub("SSSLASSSH", "/", gsub("(/)(.*?)(?= )|/.*$", "", gsub(" //", " SSSLASSSH/", x[i,Right]), perl=T)))]
+    }
 
     # update column names
     colnames(x)[which(colnames(x)=="Key")] <- "Key_with_anno"
