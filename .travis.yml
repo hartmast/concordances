@@ -7,12 +7,5 @@ cache: packages
 r_github_packages:
   - r-lib/covr
 
-# From Jim Hester / Will Landau, for avoiding timeouts
-script:
-  - |
-    R CMD build .
-    travis_wait 20 R CMD check concordances*tar.gz --no-tests
-    travis_wait 20 Rscript -e 'covr::codecov()'
-
 after_success:
   - Rscript -e 'covr::codecov()'
