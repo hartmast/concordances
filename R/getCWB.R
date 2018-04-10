@@ -1,7 +1,7 @@
 #' @export getCWB
 #' @import data.table
 #' @title Read in concordances created with the CWB Corpus Query Processor (CQP).
-#' @description This function reads in export files created with the Corpus Query Processor (CQP) of the Corpus Workbench (CWB) as dataframes. Alternatively, it offers the option to convert them to tab-separated text files on the fly.
+#' @description This function reads in export files created with the Corpus Query Processor (CQP) of the Corpus Workbench (CWB) as data.tables (from the data.table package) or normal R dataframes.
 #' @param filename The name of the file you read in.
 #' @param dt If TRUE (the default), the results will be returned as a data.table (see ?'data.table-package' for further information). If FALSE, they will be returned as a standard data frame.
 #' @examples
