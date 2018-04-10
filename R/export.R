@@ -12,11 +12,10 @@
 
 export <- function(x, sep = "\t", row.names = F, fileEncoding = "UTF-8", extension = "tsv", filename, ...) {
   if(missing(filename)) {
-    write.table(x, sep = sep, row.names = row.names, fileEncoding = fileEncoding,
-                filename = paste(as.character(x), ".t", extension = extension, sep = "", collapse = ""), ...)
-
-  } else {
-    write.table(x, sep = sep, row.names = row.names, fileEncoding = fileEncoding,
-                filename = filename, sep = "", collapse = "", ...)
+    x2 <- deparse(substitute(x))
+    filename <- paste(as.character(x2), ".", extension, sep = "", collapse = "")
   }
+     write.table(x, sep = sep, row.names = row.names, fileEncoding = fileEncoding,
+                file = filename, ...)
 }
+
