@@ -5,7 +5,7 @@
 \title{Export concordances as tab-separated files}
 \usage{
 export(x, sep = "\\t", row.names = F, fileEncoding = "UTF-8",
-  extension = "tsv", filename, ...)
+  extension = "tsv", filename, quote, ...)
 }
 \arguments{
 \item{x}{The name of the object to be exported.}
@@ -20,11 +20,13 @@ export(x, sep = "\\t", row.names = F, fileEncoding = "UTF-8",
 
 \item{filename}{Path to the export file. By default, the file is named like the object and saved in the current working directory.}
 
+\item{quote}{a logical value (TRUE or FALSE) or a numeric vector. If TRUE, any character or factor columns will be surrounded by double quotes. If a numeric vector, its elements are taken as the indices of columns to quote. In both cases, row and column names are quoted if they are written. If FALSE (the default), nothing is quoted.}
+
 \item{...}{additional arguments to be passed on to write.table.}
 }
 \value{
 A file containing a tab-separated concordance sheet.
 }
 \description{
-This function exports R objects as tab-separated files (UTF-8 by default), which is usually the ideal format for corpus concordances.
+This function - a convenient wrapper for write.table - exports R objects as tab-separated files (UTF-8 by default), which is usually the ideal format for corpus concordances.
 }

@@ -12,6 +12,8 @@ Corpus export files often come in formats that require certain modifications if 
 -   the NoSketchEngine implementation of WaCkY: **getWACKY**
 -   COSMAS2web, the online system for querying the German Reference Corpus (DeReKo): **getCOSMAS**. (getWACKY will sooner or later be merged with getNSE.)
 
+In addition, the new function **export** provides a convenient wrapper for write.table, exporting concordances as tab-separated UTF-8 files (without text qualifiers).
+
 getCWB depends on the package data.table, which speeds up handling of large files considerably. By default, getCWB therefore returns data.table objects, unless you set dt = FALSE, in which case it returns an ordinary R data frame. All other functions return R data frames.
 
 Installation
