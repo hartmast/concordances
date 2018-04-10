@@ -4,11 +4,13 @@
 \alias{export}
 \title{Export concordances as tab-separated files}
 \usage{
-export(x, sep = "\\t", row.names = F, fileEncoding = "UTF-8",
-  extension = "tsv", filename, quote, ...)
+export(x, filename, sep = "\\t", row.names = F, fileEncoding = "UTF-8",
+  extension = "tsv", quote = F, ...)
 }
 \arguments{
 \item{x}{The name of the object to be exported.}
+
+\item{filename}{Path to the export file. By default, the file is named like the object and saved in the current working directory.}
 
 \item{sep}{the field separator string. Values within each row of x are separated by this string}
 
@@ -17,8 +19,6 @@ export(x, sep = "\\t", row.names = F, fileEncoding = "UTF-8",
 \item{fileEncoding}{Intended encoding of the export file}
 
 \item{extension}{File extension. Default is tsv. Ignored if a filename / file path is specified.}
-
-\item{filename}{Path to the export file. By default, the file is named like the object and saved in the current working directory.}
 
 \item{quote}{a logical value (TRUE or FALSE) or a numeric vector. If TRUE, any character or factor columns will be surrounded by double quotes. If a numeric vector, its elements are taken as the indices of columns to quote. In both cases, row and column names are quoted if they are written. If FALSE (the default), nothing is quoted.}
 
