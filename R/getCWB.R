@@ -134,12 +134,16 @@ getCWB <- function(filename, dt = TRUE, keep.context.anno = FALSE) {
 
     # strip tags from left and right context, if present
     if(is.element("Left", colnames(x))) {
-      x[, Left_with_anno := Left]
+      if(keep.context.anno) {
+        x[, Left_with_anno := Left]
+      }
       x[, Left := sapply(1:nrow(x), function(i) gsub("SSSLASSSH", "/", gsub("(/)(.*?)(?= )|/.*$", "", gsub(" //", " SSSLASSSH/", x[i,Left]), perl=T)))]
     }
 
     if(is.element("Right", colnames(x))) {
-      x[, Right_with_anno := Right]
+      if(keep.context.anno) {
+        x[, Right_with_anno := Right]
+      }
       x[, Right := sapply(1:nrow(x), function(i) gsub("SSSLASSSH", "/", gsub("(/)(.*?)(?= )|/.*$", "", gsub(" //", " SSSLASSSH/", x[i,Right]), perl=T)))]
     }
 
