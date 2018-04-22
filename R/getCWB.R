@@ -4,11 +4,12 @@
 #' @description This function reads in export files created with the Corpus Query Processor (CQP) of the Corpus Workbench (CWB) as data.tables (from the data.table package) or normal R dataframes.
 #' @param filename The name of the file you read in.
 #' @param dt If TRUE (the default), the results will be returned as a data.table (see ?'data.table-package' for further information). If FALSE, they will be returned as a standard data frame.
+#' @param keep.context.anno If TRUE, the resulting dataframe will contain the columns "Left_with_anno" and "Right_with_anno", which contain the left and right context with annotation (if present). If FALSE (the default), all annotations in the left and right context will be dropped and only the raw text will be preserved.
 #' @examples
 #' ~~ getCWB(myfile) # do not run
 
 
-getCWB <- function(filename, dt = TRUE) {
+getCWB <- function(filename, dt = TRUE, keep.context.anno = FALSE) {
   # read file
   tx <- fread(filename, fill = T, sep="\n", encoding = "UTF-8", header = F, stringsAsFactors = F, quote = "")
 
@@ -133,10 +134,12 @@ getCWB <- function(filename, dt = TRUE) {
 
     # strip tags from left and right context, if present
     if(is.element("Left", colnames(x))) {
+      x[, Left_with_anno := Left]
       x[, Left := sapply(1:nrow(x), function(i) gsub("SSSLASSSH", "/", gsub("(/)(.*?)(?= )|/.*$", "", gsub(" //", " SSSLASSSH/", x[i,Left]), perl=T)))]
     }
 
     if(is.element("Right", colnames(x))) {
+      x[, Right_with_anno := Right]
       x[, Right := sapply(1:nrow(x), function(i) gsub("SSSLASSSH", "/", gsub("(/)(.*?)(?= )|/.*$", "", gsub(" //", " SSSLASSSH/", x[i,Right]), perl=T)))]
     }
 
