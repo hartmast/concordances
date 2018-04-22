@@ -45,10 +45,16 @@ Note that on Windows machines, you usually have to use double backslashes in fil
 getCWB("path\\to\\file.txt") # do not run
 ```
 
-If you want to open the resulting dataframes in a spreadsheet, e.g. for annotating them, you can easily export them using write.table:
+If you want to open the resulting dataframes in a spreadsheet, e.g. for annotating them, you can easily export them using *export()* or *write.table()*:
 
 ``` r
+# read in text
 myText <- getCWB("path/to/file.txt")
+
+# export text
+export(myText)
+
+# export(myText) is equivalent to:
 write.table(myText, "myText.tsv", sep = "\t", row.names = F, quote = F, 
             fileEncoding = "UTF-8")
 ```
