@@ -4,8 +4,8 @@
 \alias{export}
 \title{Export concordances as tab-separated files}
 \usage{
-export(x, filename, sep = "\\t", row.names = F, fileEncoding = "UTF-8",
-  extension = "tsv", quote = F, ...)
+export(x, filename, sep = "\\t", row.names = F,
+  fileEncoding = "UTF-8", extension = "tsv", quote = F, ...)
 }
 \arguments{
 \item{x}{The name of the object to be exported.}

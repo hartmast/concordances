@@ -23,41 +23,64 @@ getNSE <- function(filename, filename_new, tags = TRUE, convert = FALSE) {
   md <- grep("^# ", tx)
   if(length(md)>0) tx <- tx[-md]
 
-  # get metadata
-  mt <- lapply(1:length(tx),
-               function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[1], ",")))
+  # get metadata, if available
+  if(grepl("\t", unlist(strsplit(tx[1], "<|>"))[1])) {
+    mt <- lapply(1:length(tx),
+                 function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[1], ",")))
 
-  # get maximal length
-  mtMax <- max(sapply(1:length(mt), function(i) length(mt[[i]])))
+    # get maximal length
+    mtMax <- max(sapply(1:length(mt), function(i) length(mt[[i]])))
 
-  # if necessary, fill mt
-  for(i in 1:length(mt)) {
-    if(length(mt[[i]])<mtMax) {
-      mt[[i]][(length(mt[[i]])):(mtMax)] <- NA
+    # if necessary, fill mt
+    for(i in 1:length(mt)) {
+      if(length(mt[[i]])<mtMax) {
+        mt[[i]][(length(mt[[i]])):(mtMax)] <- NA
+      }
     }
+
+    # transform to df
+    kwic <- as.data.frame(matrix(ncol=mtMax, nrow=length(mt)))
+    for(i in 1:nrow(kwic)) {
+      kwic[i,] <- mt[[i]]
+    }
+
+    # add colnames
+    colnames(kwic) <- paste("Metatag", 1:mtMax, sep="")
+
+    # add Left, Key, Right
+    l <- length(kwic)
+    kwic[,((l+1):(l+3))] <- NA
+    colnames(kwic)[(l+1):(l+3)] <- c("Left", "Key", "Right")
+
+    # get left, key, right from concordance
+    kwic$Left <- sapply(1:length(tx),
+                        function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[2], "<|>"))[1])
+    kwic$Key <- sapply(1:length(tx),
+                       function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[2], "<|>"))[2])
+    kwic$Right <- sapply(1:length(tx),
+                         function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[2], "<|>"))[3])
+
+
+  } else {
+
+    left = sapply(1:length(tx),
+                  function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[2], "<|>"))[1])
+
+    key = sapply(1:length(tx),
+                 function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[2], "<|>"))[2])
+
+    right = sapply(1:length(tx),
+                   function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[2], "<|>"))[3])
+
+    kwic <- data.frame(Left = left,
+                       Key = key,
+                       Right = right
+    )
+
   }
 
-  # transform to df
-  kwic <- as.data.frame(matrix(ncol=mtMax, nrow=length(mt)))
-  for(i in 1:nrow(kwic)) {
-    kwic[i,] <- mt[[i]]
-  }
 
-  # add colnames
-  colnames(kwic) <- paste("Metatag", 1:mtMax, sep="")
 
-  # add Left, Key, Right
-  l <- length(kwic)
-  kwic[,((l+1):(l+3))] <- NA
-  colnames(kwic)[(l+1):(l+3)] <- c("Left", "Key", "Right")
-
-  # get left, key, right from concordance
-  kwic$Left <- sapply(1:length(tx),
-                      function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[2], "<|>"))[1])
-  kwic$Key <- sapply(1:length(tx),
-                     function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[2], "<|>"))[2])
-  kwic$Right <- sapply(1:length(tx),
-                       function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[2], "<|>"))[3])
 
 
   # strip Key tags, if present

@@ -10,6 +10,11 @@
 
 
 getCWB <- function(filename, dt = TRUE, keep.context.anno = FALSE) {
+
+  # set some variables to NULL in order to avoid
+  # problems with CMD check
+  V1 <- No <- Text <- Left <- Key <- Right <- Left_with_anno <- Right_with_anno <- NULL
+
   # read file
   tx <- fread(filename, fill = T, sep="\n", encoding = "UTF-8", header = F, stringsAsFactors = F, quote = "")
 
