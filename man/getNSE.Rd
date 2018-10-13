@@ -4,16 +4,12 @@
 \alias{getNSE}
 \title{Read in concordances created with NoSketchEngine (in particular, the NSE installation used by the COW corpora)}
 \usage{
-getNSE(filename, filename_new, tags = TRUE, convert = FALSE)
+getNSE(filename, tags = TRUE)
 }
 \arguments{
 \item{filename}{Path to the original concordance file.}
 
-\item{filename_new}{If convert = TRUE, the path to the new file. Default is the old filename with "_formatted" appended, in .csv format.}
-
 \item{tags}{Boolean: Does the concordance file contain tags (lemma, pos, ...)? Default is TRUE.}
-
-\item{convert}{Should the document be read into R as the dataframe (the default: convert = FALSE) or exported as a tab-separated document (if convert = TRUE)?}
 }
 \value{
 A KWIC data frame or a KWIC csv sheet.

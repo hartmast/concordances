@@ -1,10 +1,18 @@
 #' @export getCWB
 #' @import data.table
 #' @title Read in concordances created with the CWB Corpus Query Processor (CQP).
-#' @description This function reads in export files created with the Corpus Query Processor (CQP) of the Corpus Workbench (CWB) as data.tables (from the data.table package) or normal R dataframes.
+#' @description This function reads in export files created with
+#' the Corpus Query Processor (CQP) of the Corpus Workbench (CWB)
+#' as data.tables (from the data.table package) or normal R dataframes.
 #' @param filename The name of the file you read in.
-#' @param dt If TRUE (the default), the results will be returned as a data.table (see ?'data.table-package' for further information). If FALSE, they will be returned as a standard data frame.
-#' @param keep.context.anno If TRUE, the resulting dataframe will contain the columns "Left_with_anno" and "Right_with_anno", which contain the left and right context with annotation (if present). If FALSE (the default), all annotations in the left and right context will be dropped and only the raw text will be preserved.
+#' @param dt If TRUE (the default), the results will be returned as a
+#' data.table (see ?'data.table-package' for further information).
+#' If FALSE, they will be returned as a standard data frame.
+#' @param keep.context.anno If TRUE, the resulting dataframe will contain
+#' the columns "Left_with_anno" and "Right_with_anno", which contain the
+#' left and right context with annotation (if present). If FALSE (the default),
+#' all annotations in the left and right context will be dropped and only
+#' the raw text will be preserved.
 #' @examples
 #' ~~ getCWB(myfile) # do not run
 
@@ -113,11 +121,13 @@ getCWB <- function(filename, dt = TRUE, keep.context.anno = FALSE) {
     }
 
     # create progress bar
-    pb <- utils::txtProgressBar(min = 1, max = nrow(x), style = 3)
+    if(nrow(x) > 1) {
+      pb <- utils::txtProgressBar(min = 1, max = nrow(x), style = 3)
+    }
 
     # fill the new columns
     for(j in 1:nrow(x)) {
-      utils::setTxtProgressBar(pb, j)
+      if(nrow(x) > 1) { utils::setTxtProgressBar(pb, j) }
       for(t in 1:length(grep("tag", colnames(x)))) {
         helper <- lapply(1:l, function(z) paste(lapply(.splitter(x[j,Key], " "),
                                                        function(i) unlist(strsplit(i, "(?<!^)/", perl=T))[z]), collapse=" "))[t]
@@ -130,7 +140,7 @@ getCWB <- function(filename, dt = TRUE, keep.context.anno = FALSE) {
     }
 
     # close progress bar
-    close(pb)
+    if(nrow(x) > 1) { close(pb) }
 
     # print better-grab-a-coffee message for large files
     if(nrow(x)>10000) {

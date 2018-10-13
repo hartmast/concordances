@@ -3,19 +3,9 @@
 #' @description Function for reading in concordances created with NoSketchEngine.
 #' @param filename Path to the original concordance file.
 #' @param tags Boolean: Does the concordance file contain tags (lemma, pos, ...)? Default is TRUE.
-#' @param convert Should the document be read into R as the dataframe (the default: convert = FALSE) or exported as a tab-separated document (if convert = TRUE)?
-#' @param filename_new If convert = TRUE, the path to the new file. Default is the old filename with "_formatted" appended, in .csv format.
 #' @return A KWIC data frame or a KWIC csv sheet.
 
-getNSE <- function(filename, filename_new, tags = TRUE, convert = FALSE) {
-
-  if(missing(filename_new)) {
-    if(length(grep("\\.", filename)) > 0) {
-      filename_new <- paste(unlist(strsplit(filename, "\\."))[1:(length(unlist(strsplit(filename, "\\.")))-1)], "_formatted.csv", sep="")
-    } else {
-      filename_new <- paste(filename, "_formatted.csv", sep="")
-    }
-  }
+getNSE <- function(filename, tags = TRUE) {
 
   tx <- scan(filename, what="character", sep="\n", encoding = "UTF-8")
 
@@ -148,12 +138,7 @@ getNSE <- function(filename, filename_new, tags = TRUE, convert = FALSE) {
 
   }
 
-  if(convert) {
-    utils::write.table(kwic, file = filename_new, sep="\t", row.names = F, quote = F,
-                fileEncoding = "UTF-8")
-  } else {
-    return(kwic)
-  }
+  return(kwic)
 
 
 }
