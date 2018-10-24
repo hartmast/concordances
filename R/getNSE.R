@@ -15,8 +15,18 @@ getNSE <- function(filename, tags = TRUE) {
 
   # get metadata, if available
   if(grepl("\t", unlist(strsplit(tx[1], "<|>"))[1])) {
-    mt <- lapply(1:length(tx),
-                 function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[1], ",")))
+
+    # check if hits are numbered in the very first column
+    # (which means that there's another column before the
+    # metadata column)
+    if(length(unlist(strsplit(tx[1], "\t"))) > 2) {
+      mt <- lapply(1:length(tx),
+                   function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[2], ",")))
+    } else {
+      mt <- lapply(1:length(tx),
+                   function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[1], ",")))
+    }
+
 
     # get maximal length
     mtMax <- max(sapply(1:length(mt), function(i) length(mt[[i]])))
@@ -43,23 +53,33 @@ getNSE <- function(filename, tags = TRUE) {
     colnames(kwic)[(l+1):(l+3)] <- c("Left", "Key", "Right")
 
     # get left, key, right from concordance
+
+    # check again if hits are numbered in the very first column
+    # (which means that there's another column before the
+    # metadata column)
+    if(length(unlist(strsplit(tx[1], "\t"))) > 2) {
+      n <- 3
+    } else {
+      n <- 2
+    }
+
     kwic$Left <- sapply(1:length(tx),
-                        function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[2], "<|>"))[1])
+                        function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[n], "<|>"))[1])
     kwic$Key <- sapply(1:length(tx),
-                       function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[2], "<|>"))[2])
+                       function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[n], "<|>"))[2])
     kwic$Right <- sapply(1:length(tx),
-                         function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[2], "<|>"))[3])
+                         function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[n], "<|>"))[3])
 
 
   } else {
 
-    left = sapply(1:length(tx),
+    left <- sapply(1:length(tx),
                   function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[2], "<|>"))[1])
 
-    key = sapply(1:length(tx),
+    key <- sapply(1:length(tx),
                  function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[2], "<|>"))[2])
 
-    right = sapply(1:length(tx),
+    right <- sapply(1:length(tx),
                    function(i) unlist(strsplit(unlist(strsplit(tx[i], "\t"))[2], "<|>"))[3])
 
     kwic <- data.frame(Left = left,
