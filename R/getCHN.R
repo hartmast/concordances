@@ -19,7 +19,12 @@ getCHN <- function(filename) {
   t2 <- sapply(1:length(t),
                function(i)
                  t2[which(t2>t[i])][1]) # just in case there's more than 1 <a class="text error" etc.
-  # after one of the <titlerow> tags
+                                        # after one of the <titlerow> tags
+
+  # for titles spanning more than one line: find </div> tag
+  d <- grep("</div>", f)
+  d <- sapply(1:length(t2), function(i) min(d[which(d>t2[i])]))
+
 
   # find concordance rows
   cr <- grep("<td class=\"tbl_conc_left\">", f)
@@ -39,8 +44,11 @@ getCHN <- function(filename) {
 
 
   # getting the sources
+
   titles <- data.frame(No    = t,
-                       Title = gsub("<.*?>", "", f[t2]),
+                       Title = sapply(1:length(t),
+                                      function(i)
+                                        paste(gsub("<.*?>", "", f[t2[i]:(d[i]-1)]), collapse = " ")),
                        stringsAsFactors = F)
   titles$Year <- gsub(".*\\(|\\)", "", titles$Title)
 
