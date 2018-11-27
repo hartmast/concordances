@@ -11,7 +11,9 @@ Corpus export files often come in formats that require certain modifications if 
 -   NoSketchEngine (in particular, the NSE implementation of the COW corpora): **getNSE**
 -   the NoSketchEngine implementation of WaCkY: **getWACKY**
 -   COSMAS2web, the online system for querying the German Reference Corpus (DeReKo): **getCOSMAS**,
--   the Corpus Hedendaags Nederlands (this one does not offer export files but you can just save the page with the query results in your browser and use the saved HTML file as input for the function): **getCHN**. (getWACKY will sooner or later be merged with getNSE.)
+-   the Corpus Hedendaags Nederlands (this one does not offer export files but you can just save the page with the query results in your browser and use the saved HTML file as input for the function): **getCHN**.
+
+(getWACKY will sooner or later be merged with getNSE.)
 
 In addition, the function **export** provides a convenient wrapper for write.table, exporting concordances as tab-separated UTF-8 files (without text qualifiers). This is often the most desirable option for KWIC concordance files as they tend to contain (often unmatched) scarequotes or commas, which can lead to parsing errors when using the typical CSV export settings. Tabs, by contrast, are rare (though not unheard of) and most of the functions in this package try to get rid of them.
 
