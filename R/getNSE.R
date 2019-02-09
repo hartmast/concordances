@@ -16,6 +16,12 @@ getNSE <- function(filename, tags = TRUE) {
   # get metadata, if available
   if(grepl("\t", unlist(strsplit(tx[1], "<|>"))[1])) {
 
+
+    # if the metadata contain URLs, this can cause problems if the URL
+    # contains commas. This line detects URLs with commas and
+    # replaces them
+    tx <- gsub(",(?=.*html?,)", "%%%COMMA%%%", tx, perl=T)
+
     # check if hits are numbered in the very first column
     # (which means that there's another column before the
     # metadata column)
@@ -31,7 +37,7 @@ getNSE <- function(filename, tags = TRUE) {
     # get maximal length
     mtMax <- max(sapply(1:length(mt), function(i) length(mt[[i]])))
 
-    # if necessary, fill mt
+    # if necessary, add more elements to mt (= vector for metadata)
     for(i in 1:length(mt)) {
       if(length(mt[[i]])<mtMax) {
         mt[[i]][(length(mt[[i]])):(mtMax)] <- NA
@@ -46,6 +52,9 @@ getNSE <- function(filename, tags = TRUE) {
 
     # add colnames
     colnames(kwic) <- paste("Metatag", 1:mtMax, sep="")
+
+    # transform %%%COMMA%%% in URLs back to real commas
+    kwic$Metatag1 <- gsub("%%%COMMA%%%", "", kwic$Metatag1)
 
     # add Left, Key, Right
     l <- length(kwic)
