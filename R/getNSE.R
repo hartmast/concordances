@@ -50,7 +50,7 @@ getNSE <- function(filename, xml, tags, context_tags, verbose = TRUE) {
       mt <- gsub(",(?=.*html?,)", "%%%COMMA%%%", mt, perl=T)
 
       # get individual metadata
-      mt <- lapply(1:length(mt), function(i) unlist(strsplit(mt[1], ",")))
+      mt <- lapply(1:length(mt), function(i) unlist(strsplit(mt[i], ",")))
 
       # get maximal length
       mtMax <- max(sapply(1:length(mt), function(i) length(mt[[i]])))
