@@ -32,3 +32,57 @@
 
 
 
+
+# Last Left ---------------------------------------------------------------
+
+# core function of last_left
+.last_left <- function(string, n, omit_punctuation) {
+
+  string <- as.character(string)
+  string <- unlist(strsplit(string, " "))
+
+  # omit punctuation if specified
+  if(omit_punctuation) {
+    string <- string[grep("[[:alnum:]]", string)]
+  }
+
+  # length of string
+  l      <- length(string)
+
+  if(l < n) {
+    return(paste(string, sep="", collapse = " "))
+  } else {
+
+    return(paste(string[(l-(n-1)):l], sep="", collapse = " "))
+  }
+}
+
+
+
+# first_right -------------------------------------------------------------
+
+# core function of first_right
+.first_right <- function(string, n, omit_punctuation) {
+
+  string <- as.character(string)
+  string <- unlist(strsplit(string, " "))
+
+
+  # omit punctuation if specified
+  if(omit_punctuation) {
+    string <- string[grep("[[:alnum:]]", string)]
+  }
+
+  # length of string
+  l      <- length(string)
+
+  if(l < n) {
+    return(paste(string, sep="", collapse = " "))
+  } else {
+
+    return(paste(string[1:n], sep="", collapse = " "))
+  }
+}
+
+
+
