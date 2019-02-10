@@ -8,12 +8,10 @@ concordances
 Corpus export files often come in formats that require certain modifications if you want to import them into a spreadsheet program or if you want to read them into R as a data frame. The aim of *concordances* is to automatize this process. All you need is a corpus export file, and *concordances* will (try to) convert it for you. Currently it can handle export files from
 
 -   the corpus workbench / CQP (if you use CQPweb, you don't need the package: just use CQPweb's KWIC export function): **getCWB**
--   NoSketchEngine (in particular, the NSE implementation of the COW corpora): **getNSE**
--   the NoSketchEngine implementation of WaCkY: **getWACKY**
+-   NoSketchEngine (in particular, the NSE implementation of the COW and WaCkY corpora): **getNSE**
 -   COSMAS2web, the online system for querying the German Reference Corpus (DeReKo): **getCOSMAS**,
 -   the Corpus Hedendaags Nederlands (this one does not offer export files but you can just save the page with the query results in your browser and use the saved HTML file as input for the function): **getCHN**.
-
-(getWACKY will sooner or later be merged with getNSE.)
+-   (DEPRECATED: getWACKY - for the NoSketchEngine implementation of the Wacky corpora. Use getNSE instead.)
 
 In addition, the function **export** provides a convenient wrapper for write.table, exporting concordances as tab-separated UTF-8 files (without text qualifiers). This is often the most desirable option for KWIC concordance files as they tend to contain (often unmatched) scarequotes or commas, which can lead to parsing errors when using the typical CSV export settings. Tabs, by contrast, are rare (though not unheard of) and most of the functions in this package try to get rid of them.
 

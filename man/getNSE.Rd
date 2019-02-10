@@ -2,14 +2,30 @@
 % Please edit documentation in R/getNSE.R
 \name{getNSE}
 \alias{getNSE}
-\title{Read in concordances created with NoSketchEngine (in particular, the NSE installation used by the COW corpora)}
+\title{Read in concordances created with NoSketchEngine (in particular,
+the NSE installation used by the COW corpora)}
 \usage{
-getNSE(filename, tags = TRUE)
+getNSE(filename, xml, tags, context_tags, verbose = TRUE)
 }
 \arguments{
 \item{filename}{Path to the original concordance file.}
 
-\item{tags}{Boolean: Does the concordance file contain tags (lemma, pos, ...)? Default is TRUE.}
+\item{xml}{Boolean: Is the export file an XML or a TXT file? (If missing,
+the function will try to determine this automatically.) Using XML files instead
+of TXT files is strongly recommended: The identification of KWIC columns can be
+problematic in the latter as pointed brackets (< / >) are used as separators in the
+TXT export files, but they sometimes also occur in the concordance text.}
+
+\item{tags}{Boolean: Does the concordance file contain tags (lemma, pos, ...)
+for the keyword(s)?
+If missing, the function will try to determine automatically if there are tags.}
+
+\item{context_tags}{Boolean: Does the concordance file contain tags (lemma, pos, ...)
+for the context?
+If missing, the function will try to determine automatically if there are tags.}
+
+\item{verbose}{Boolean: If TRUE (the default), the function will display occasional
+status updates, which can helpful in the case of large files.}
 }
 \value{
 A KWIC data frame or a KWIC csv sheet.

@@ -9,6 +9,8 @@
 
 getWACKY <- function(filename, tags=c("display", "omit", "column"), XML=TRUE) {
 
+  .Deprecated("getNSE")
+
   if(missing(tags)) {
     tags="column"
   }
