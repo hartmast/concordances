@@ -58,7 +58,7 @@ getNSE <- function(filename, xml, tags, context_tags, verbose = TRUE) {
       # if necessary, add more elements to mt (= vector for metadata)
       for(i in 1:length(mt)) {
         if(length(mt[[i]])<mtMax) {
-          mt[[i]][(length(mt[[i]])):(mtMax)] <- NA
+          mt[[i]][((length(mt[[i]]))+1):(mtMax)] <- NA
         }
       }
 
@@ -124,7 +124,7 @@ getNSE <- function(filename, xml, tags, context_tags, verbose = TRUE) {
       # if necessary, add more elements to mt (= vector for metadata)
       for(i in 1:length(mt)) {
         if(length(mt[[i]])<mtMax) {
-          mt[[i]][(length(mt[[i]])):(mtMax)] <- NA
+          mt[[i]][(length(mt[[i]])+1):(mtMax)] <- NA
         }
       }
 
