@@ -199,69 +199,71 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
     # extended KWIC
     if(length(ec_start)==1) {
       myExtendedKWIC <- myCosmas[ec_start:(ec_end-1)]
-    }
 
-    # remove header
-    exKWIC_start <- grep("__________________+", myExtendedKWIC)
-    myExtendedKWIC <- myExtendedKWIC[(exKWIC_start+1):length(myExtendedKWIC)]
-
+      # remove header
+      exKWIC_start <- grep("__________________+", myExtendedKWIC)
+      myExtendedKWIC <- myExtendedKWIC[(exKWIC_start+1):length(myExtendedKWIC)]
 
 
 
-    # merge attestations that are split up into two lines
-    # (no idea why this happens....)
 
-    # for this purpose, find all lines that contain alphanumeric characters
-    find_alnum <- grep("[[:alnum:]]", myExtendedKWIC)
+      # merge attestations that are split up into two lines
+      # (no idea why this happens....)
 
-    # find those cases where the distance between one alnum and
-    # the next is not two
+      # for this purpose, find all lines that contain alphanumeric characters
+      find_alnum <- grep("[[:alnum:]]", myExtendedKWIC)
 
-    find_alnum_dist <- c(2, unlist(sapply(2:length(find_alnum), function(i) find_alnum[i]-find_alnum[i-1])))
-    find_non_consecutive <- which(find_alnum_dist < 2)
+      # find those cases where the distance between one alnum and
+      # the next is not two
 
-    if(length(find_non_consecutive) > 0) {
-      find_non_consecutive <- find_alnum[find_non_consecutive]
+      find_alnum_dist <- c(2, unlist(sapply(2:length(find_alnum), function(i) find_alnum[i]-find_alnum[i-1])))
+      find_non_consecutive <- which(find_alnum_dist < 2)
 
-      for(i in 1:length(find_non_consecutive)) {
-        myExtendedKWIC[(find_non_consecutive[i]-1)] <- paste(myExtendedKWIC[(find_non_consecutive[i]-1)], myExtendedKWIC[(find_non_consecutive[i])])
+      if(length(find_non_consecutive) > 0) {
+        find_non_consecutive <- find_alnum[find_non_consecutive]
+
+        for(i in 1:length(find_non_consecutive)) {
+          myExtendedKWIC[(find_non_consecutive[i]-1)] <- paste(myExtendedKWIC[(find_non_consecutive[i]-1)], myExtendedKWIC[(find_non_consecutive[i])])
+        }
+
+        myExtendedKWIC <- myExtendedKWIC[-find_non_consecutive]
       }
 
-      myExtendedKWIC <- myExtendedKWIC[-find_non_consecutive]
-    }
+      # remove blaks
+      myExtendedKWIC <- myExtendedKWIC[which(myExtendedKWIC!="")]
 
-    # remove blaks
-    myExtendedKWIC <- myExtendedKWIC[which(myExtendedKWIC!="")]
+      # check if there are unmatched keyword markers
+      no_end   <- which(!grepl("</>", myExtendedKWIC))
 
-    # check if there are unmatched keyword markers
-    no_end   <- which(!grepl("</>", myExtendedKWIC))
+      if(length(no_end) > 0) {
+        for(i in 1:length(no_end)) {
+          myExtendedKWIC[(no_end[i]-1)] <- paste(myExtendedKWIC[(no_end[i]-1)], myExtendedKWIC[no_end], collapse = "")
+        }
 
-    if(length(no_end) > 0) {
-      for(i in 1:length(no_end)) {
-        myExtendedKWIC[(no_end[i]-1)] <- paste(myExtendedKWIC[(no_end[i]-1)], myExtendedKWIC[no_end], collapse = "")
+        myExtendedKWIC <- myExtendedKWIC[-no_end]
+
       }
 
-      myExtendedKWIC <- myExtendedKWIC[-no_end]
+
+
+      # get left context
+      left_ext <- gsub("<B>.*", "", myExtendedKWIC)
+
+      # get right context
+      right_ext <- gsub("</>.*", "", myExtendedKWIC)
+
+      # get rid of POS tags if there are any in the extended context
+      left_ext <- gsub("<.*?>", "", left_ext)
+      right_ext <- gsub("<.*?>", "", right_ext)
+
+      # add to KWIC
+      if(length(left_ext) == length(right_ext) & length(left_ext) == nrow(kwic)) {
+        kwic$left_ext <- left_ext
+        kwic$right_ext <- right_ext
+      }
 
     }
 
-
-
-    # get left context
-    left_ext <- gsub("<B>.*", "", myExtendedKWIC)
-
-    # get right context
-    right_ext <- gsub("</>.*", "", myExtendedKWIC)
-
-    # get rid of POS tags if there are any in the extended context
-    left_ext <- gsub("<.*?>", "", left_ext)
-    right_ext <- gsub("<.*?>", "", right_ext)
-
-    # add to KWIC
-    if(length(left_ext) == length(right_ext) & length(left_ext) == nrow(kwic)) {
-      kwic$left_ext <- left_ext
-      kwic$rigt_ext <- right_ext
-    }
 
 
 
