@@ -32,7 +32,7 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
 
 
   con <- file(filename, encoding = "latin1")
-  myCosmas <- scan(con, what="character", sep="\n")
+  myCosmas <- scan(con, what="character", sep="\n", blank.lines.skip = F)
   close(con)
 
   # check export format: KWIC only, KWIC + full text, ...
@@ -54,6 +54,10 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
   # rm(myCosmas)
 
   myKWIC <- .selectsubset(myKWIC, grep("_____", myKWIC)[1]+1)
+
+  # remove empty lines
+  myKWIC <- myKWIC[which(myKWIC!="")]
+
 
 
 
@@ -200,6 +204,48 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
     # remove header
     exKWIC_start <- grep("__________________+", myExtendedKWIC)
     myExtendedKWIC <- myExtendedKWIC[(exKWIC_start+1):length(myExtendedKWIC)]
+
+
+
+
+    # merge attestations that are split up into two lines
+    # (no idea why this happens....)
+
+    # for this purpose, find all lines that contain alphanumeric characters
+    find_alnum <- grep("[[:alnum:]]", myExtendedKWIC)
+
+    # find those cases where the distance between one alnum and
+    # the next is not two
+
+    find_alnum_dist <- c(2, unlist(sapply(2:length(find_alnum), function(i) find_alnum[i]-find_alnum[i-1])))
+    find_non_consecutive <- which(find_alnum_dist < 2)
+
+    if(length(find_non_consecutive) > 0) {
+      find_non_consecutive <- find_alnum[find_non_consecutive]
+
+      for(i in 1:length(find_non_consecutive)) {
+        myExtendedKWIC[(find_non_consecutive[i]-1)] <- paste(myExtendedKWIC[(find_non_consecutive[i]-1)], myExtendedKWIC[(find_non_consecutive[i])])
+      }
+
+      myExtendedKWIC <- myExtendedKWIC[-find_non_consecutive]
+    }
+
+    # remove blaks
+    myExtendedKWIC <- myExtendedKWIC[which(myExtendedKWIC!="")]
+
+    # check if there are unmatched keyword markers
+    no_end   <- which(!grepl("</>", myExtendedKWIC))
+
+    if(length(no_end) > 0) {
+      for(i in 1:length(no_end)) {
+        myExtendedKWIC[(no_end[i]-1)] <- paste(myExtendedKWIC[(no_end[i]-1)], myExtendedKWIC[no_end], collapse = "")
+      }
+
+      myExtendedKWIC <- myExtendedKWIC[-no_end]
+
+    }
+
+
 
     # get left context
     left_ext <- gsub("<B>.*", "", myExtendedKWIC)
