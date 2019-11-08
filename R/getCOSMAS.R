@@ -10,11 +10,16 @@
 #' Set to FALSE (the default) if you exported an unsorted concordance (which is
 #' COSMAS II's default setting). The concordances package currently only supports
 #' unsorted concordances, "Jahresansicht", and "Jahrzehntansicht".
+#' @param more_context If TRUE (the default), the "Belege" section from the
+#' concordance file is used to preserve the user-defined context window.
+#' If FALSE, only the "KWIC" section from the concordance file is used,
+#' which means that only ca. 5 words left and right are preserved,
+#' ignoring the user-defined context window.
 #' @param ... arguments passed on from other methods
 #' @return A KWIC data frame.
 
 # getCOSMAS function
-getCOSMAS <- function(filename, merge=FALSE, years=FALSE, ...) {
+getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...) {
   filename <- filename
 
   if(length(grep("DE|Ger.*|ger.*", Sys.getlocale()))<1) {
@@ -46,7 +51,7 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, ...) {
     myKWIC <- myCosmas[(grep("KWIC", myCosmas)[1]+1):(max(grep("<B>", myCosmas)))]
   }
 
-  rm(myCosmas)
+  # rm(myCosmas)
 
   myKWIC <- .selectsubset(myKWIC, grep("_____", myKWIC)[1]+1)
 
@@ -169,6 +174,58 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, ...) {
 
 
   }
+
+  # find extended left and right context
+  if(more_context) {
+
+    # find start of extended context
+    ec_start <- grep("Belege \\(", myCosmas)
+
+    # find end of extended context
+    ec_end <- grep("Suchbegriff-Expansionslisten", myCosmas)
+
+    if(length(ec_end)==0) {
+      ec_end <- grep("Zusammensetzung des aktiven Korpus", myCosmas)
+    }
+
+    if(length(ec_end)==0) {
+      ec_end <- length(myCosmas)
+    }
+
+    # extended KWIC
+    if(length(ec_start)==1) {
+      myExtendedKWIC <- myCosmas[ec_start:(ec_end-1)]
+    }
+
+    # remove header
+    exKWIC_start <- grep("__________________+", myExtendedKWIC)
+    myExtendedKWIC <- myExtendedKWIC[(exKWIC_start+1):length(myExtendedKWIC)]
+
+    # get left context
+    left_ext <- gsub("<B>.*", "", myExtendedKWIC)
+
+    # get right context
+    right_ext <- gsub("</>.*", "", myExtendedKWIC)
+
+    # get rid of POS tags if there are any in the extended context
+    left_ext <- gsub("<.*?>", "", left_ext)
+    right_ext <- gsub("<.*?>", "", right_ext)
+
+    # add to KWIC
+    if(length(left_ext) == length(right_ext) & length(left_ext) == nrow(kwic)) {
+      kwic$left_ext <- left_ext
+      kwic$rigt_ext <- right_ext
+    }
+
+
+
+
+
+
+
+
+  }
+
 
   return(kwic)
 

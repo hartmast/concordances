@@ -4,7 +4,8 @@
 \alias{getCOSMAS}
 \title{Read in concordances created with COSMAS II.}
 \usage{
-getCOSMAS(filename, merge = FALSE, years = FALSE, ...)
+getCOSMAS(filename, merge = FALSE, years = FALSE,
+  more_context = TRUE, ...)
 }
 \arguments{
 \item{filename}{Path to the COSMAS II output file.}
@@ -18,6 +19,12 @@ should they be merged in one column?}
 Set to FALSE (the default) if you exported an unsorted concordance (which is
 COSMAS II's default setting). The concordances package currently only supports
 unsorted concordances, "Jahresansicht", and "Jahrzehntansicht".}
+
+\item{more_context}{If TRUE (the default), the "Belege" section from the
+concordance file is used to preserve the user-defined context window.
+If FALSE, only the "KWIC" section from the concordance file is used,
+which means that only ca. 5 words left and right are preserved,
+ignoring the user-defined context window.}
 
 \item{...}{arguments passed on from other methods}
 }
