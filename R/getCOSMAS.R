@@ -250,7 +250,7 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
       left_ext <- gsub("<B>.*", "", myExtendedKWIC)
 
       # get right context
-      right_ext <- gsub("</>.*", "", myExtendedKWIC)
+      right_ext <- gsub(".*</>", "", myExtendedKWIC)
 
       # get rid of POS tags if there are any in the extended context
       left_ext <- gsub("<.*?>", "", left_ext)
