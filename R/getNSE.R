@@ -44,41 +44,50 @@ getNSE <- function(filename, xml, tags, context_tags, verbose = TRUE) {
       mt <- grep("<ref>", tx)
       mt <- gsub(".*<ref>|</ref>.*", "", tx[mt])
 
-      # if the metadata contain URLs, this can cause problems if the URL
-      # contains commas. This line detects URLs with commas and
-      # replaces them
-      mt <- gsub(",(?=.*html?,)", "%%%COMMA%%%", mt, perl=T)
+      # in some cases, the metadata element in <ref> is empty,
+      # therefore we have to check first whether mt contains
+      # any strings at all:
+      if(!all(sapply(1:length(mt), function(i) identical(mt[[i]], character(0)))) &
+         !all(sapply(1:length(mt), function(i) mt[[i]]==""))) {
+        # if the metadata contain URLs, this can cause problems if the URL
+        # contains commas. This line detects URLs with commas and
+        # replaces them
+        mt <- gsub(",(?=.*html?,)", "%%%COMMA%%%", mt, perl=T)
 
-      # get individual metadata
-      mt <- lapply(1:length(mt), function(i) unlist(strsplit(mt[i], ",")))
 
-      # get maximal length
-      mtMax <- max(sapply(1:length(mt), function(i) length(mt[[i]])))
+        # get individual metadata
+        mt <- lapply(1:length(mt), function(i) unlist(strsplit(mt[i], ",")))
 
-      # if necessary, add more elements to mt (= vector for metadata)
-      for(i in 1:length(mt)) {
-        if(length(mt[[i]])<mtMax) {
-          mt[[i]][((length(mt[[i]]))+1):(mtMax)] <- NA
+        # get maximal length
+        mtMax <- max(sapply(1:length(mt), function(i) length(mt[[i]])))
+
+        # if necessary, add more elements to mt (= vector for metadata)
+        for(i in 1:length(mt)) {
+          if(length(mt[[i]])<mtMax) {
+            mt[[i]][((length(mt[[i]]))+1):(mtMax)] <- NA
+          }
         }
+
+        # transform to df
+        kwic <- as.data.frame(matrix(ncol=mtMax, nrow=length(mt)),
+                              stringsAsFactors = F)
+        for(i in 1:nrow(kwic)) {
+          kwic[i,] <- mt[[i]]
+        }
+
+        # add colnames
+        colnames(kwic) <- paste("Metatag", 1:mtMax, sep="")
+
+        # transform %%%COMMA%%% in URLs back to real commas
+        kwic$Metatag1 <- gsub("%%%COMMA%%%", "", kwic$Metatag1)
+
+        # add left, right, key
+        kwic$Left <- lc
+        kwic$Key <- key
+        kwic$Right <- rc
       }
 
-      # transform to df
-      kwic <- as.data.frame(matrix(ncol=mtMax, nrow=length(mt)),
-                            stringsAsFactors = F)
-      for(i in 1:nrow(kwic)) {
-        kwic[i,] <- mt[[i]]
-      }
 
-      # add colnames
-      colnames(kwic) <- paste("Metatag", 1:mtMax, sep="")
-
-      # transform %%%COMMA%%% in URLs back to real commas
-      kwic$Metatag1 <- gsub("%%%COMMA%%%", "", kwic$Metatag1)
-
-      # add left, right, key
-      kwic$Left <- lc
-      kwic$Key <- key
-      kwic$Right <- rc
 
 
     } else {
