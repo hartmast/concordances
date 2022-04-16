@@ -85,6 +85,10 @@ getNSE <- function(filename, xml, tags, context_tags, verbose = TRUE) {
         kwic$Left <- lc
         kwic$Key <- key
         kwic$Right <- rc
+      } else {
+        kwic <- data.frame(Left  = lc,
+                           Key   = key,
+                           Right = rc)
       }
 
 
