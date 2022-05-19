@@ -193,7 +193,7 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
     }
 
     if(length(ec_end)==0) {
-      ec_end <- length(myCosmas)
+      ec_end <- length(myCosmas) + 1
     }
 
     # extended KWIC
