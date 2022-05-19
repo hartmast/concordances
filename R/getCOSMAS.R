@@ -183,7 +183,7 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
   if(more_context) {
 
     # find start of extended context
-    ec_start <- grep("Belege \\(", myCosmas)
+    ec_start <- grep("^Belege \\(", myCosmas)
 
     # find end of extended context
     ec_end <- grep("Suchbegriff-Expansionslisten", myCosmas)
