@@ -183,7 +183,7 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
   if(more_context) {
 
     # find start of extended context
-    ec_start <- grep("Belege \\(", myCosmas)
+    ec_start <- grep("^Belege \\(", myCosmas)
 
     # find end of extended context
     ec_end <- grep("Suchbegriff-Expansionslisten", myCosmas)
@@ -193,7 +193,7 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
     }
 
     if(length(ec_end)==0) {
-      ec_end <- length(myCosmas)
+      ec_end <- length(myCosmas) + 1
     }
 
     # extended KWIC
@@ -207,29 +207,15 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
 
 
 
-      # merge attestations that are split up into two lines
+      # merge attestations that are split up into two and more lines
       # (no idea why this happens....)
 
-      # for this purpose, find all lines that contain alphanumeric characters
-      find_alnum <- grep("[[:alnum:]]", myExtendedKWIC)
+      # for this purpose, find all lines empty lines
+      myExtendedKWIC_empty <- which(myExtendedKWIC=="")
+      # merge lines between empty lines
+      myExtendedKWIC <- trimws(unlist(Map(function(x, y) paste0(myExtendedKWIC[x:y], collapse=" "), c(1, myExtendedKWIC_empty), c(myExtendedKWIC_empty, length(myExtendedKWIC)))))
 
-      # find those cases where the distance between one alnum and
-      # the next is not two
-
-      find_alnum_dist <- c(2, unlist(sapply(2:length(find_alnum), function(i) find_alnum[i]-find_alnum[i-1])))
-      find_non_consecutive <- which(find_alnum_dist < 2)
-
-      if(length(find_non_consecutive) > 0) {
-        find_non_consecutive <- find_alnum[find_non_consecutive]
-
-        for(i in 1:length(find_non_consecutive)) {
-          myExtendedKWIC[(find_non_consecutive[i]-1)] <- paste(myExtendedKWIC[(find_non_consecutive[i]-1)], myExtendedKWIC[(find_non_consecutive[i])])
-        }
-
-        myExtendedKWIC <- myExtendedKWIC[-find_non_consecutive]
-      }
-
-      # remove blaks
+      # remove blanks
       myExtendedKWIC <- myExtendedKWIC[which(myExtendedKWIC!="")]
 
       # check if there are unmatched keyword markers
