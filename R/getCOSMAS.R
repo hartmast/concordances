@@ -75,8 +75,11 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
     right <- trimws(gsub(".*</B?>", "", currentLine))
     getKeywords <- trimws(.selectsubset(.splitter(currentLine, "<B>"), 2))
 
-
-    keyword <- trimws(.splitter(getKeywords, "</B?>")[1:(length(.splitter(getKeywords, "</B?>"))-1)])
+    end_offset <- 1
+    if (right=='') {
+	    end_offset <- 0
+    }
+    keyword <- trimws(.splitter(getKeywords, "</B?>")[1:(length(.splitter(getKeywords, "</B?>"))-end_offset)])
 
     return(c(dataSource, left, keyword, right))
   }
