@@ -72,11 +72,11 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
     dataSource <- gsub("[:alnum:]* .*", "", myKWIC[i])
     currentLine <- gsub("^[[:alnum:]]* *", "", myKWIC[i])
     left <- trimws(gsub("<B>.*", "", currentLine))
-    right <- trimws(gsub(".*</>", "", currentLine))
+    right <- trimws(gsub(".*</B?>", "", currentLine))
     getKeywords <- trimws(.selectsubset(.splitter(currentLine, "<B>"), 2))
 
 
-    keyword <- trimws(.splitter(getKeywords, "</>")[1:(length(.splitter(getKeywords, "</>"))-1)])
+    keyword <- trimws(.splitter(getKeywords, "</B?>")[1:(length(.splitter(getKeywords, "</B?>"))-1)])
 
     return(c(dataSource, left, keyword, right))
   }
@@ -219,7 +219,7 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
       myExtendedKWIC <- myExtendedKWIC[which(myExtendedKWIC!="")]
 
       # check if there are unmatched keyword markers
-      no_end   <- which(!grepl("</>", myExtendedKWIC))
+      no_end   <- which(!grepl("</B?>", myExtendedKWIC))
 
       if(length(no_end) > 0) {
         for(i in 1:length(no_end)) {
@@ -236,7 +236,7 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
       left_ext <- gsub("<B>.*", "", myExtendedKWIC)
 
       # get right context
-      right_ext <- gsub(".*</>", "", myExtendedKWIC)
+      right_ext <- gsub(".*</B?>", "", myExtendedKWIC)
 
       # get rid of POS tags if there are any in the extended context
       left_ext <- gsub("<.*?>", "", left_ext)
