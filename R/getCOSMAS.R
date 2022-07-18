@@ -115,7 +115,7 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
 
   ## get data into the dataframe ##
 
-  pb <- utils::txtProgressBar(min = 1, max = length(myKWIC), style = 3)
+  pb <- utils::txtProgressBar(min = 0, max = length(myKWIC), style = 3)
 
   if(merge) {
     for(i in 1:length(myKWIC)) {
