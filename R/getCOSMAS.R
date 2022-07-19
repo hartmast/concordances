@@ -71,6 +71,11 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
 
     dataSource <- gsub("[:alnum:]* .*", "", myKWIC[i])
     currentLine <- gsub("^[[:alnum:]]* *", "", myKWIC[i])
+
+    return(c(dataSource, extractAttestationParts(currentLine)))
+  }
+
+  extractAttestationParts <- function(currentLine) {
     left <- trimws(gsub("<B>.*", "", currentLine))
     right <- trimws(gsub(".*</B?>", "", currentLine))
     getKeywords <- trimws(.selectsubset(.splitter(currentLine, "<B>"), 2))
@@ -81,7 +86,7 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
     }
     keyword <- trimws(.splitter(getKeywords, "</B?>")[1:(length(.splitter(getKeywords, "</B?>"))-end_offset)])
 
-    return(c(dataSource, left, keyword, right))
+    return(c(left, keyword, right))
   }
 
   ############
@@ -235,21 +240,36 @@ getCOSMAS <- function(filename, merge=FALSE, years=FALSE, more_context=TRUE, ...
 
 
 
-      # get left context
-      left_ext <- gsub("<B>.*", "", myExtendedKWIC)
+      attParts <- lapply(myExtendedKWIC, extractAttestationParts)
+      left_ext <- sapply(attParts, "[[", 1)
+      right_ext <- sapply(attParts, tail, 1)
 
-      # get right context
-      right_ext <- gsub(".*</B?>", "", myExtendedKWIC)
+      # get keywords
+      key_ext <- lapply(attParts, head, -1)
+      key_ext <- lapply(key_ext, tail, -1)
+      if (merge) {
+          key_ext <- lapply(key_ext, paste, sep="", collapse=" ")
+      }
+      else {
+         # convert list with keywords to matrix
+          key_ext <- t(sapply(key_ext, '[', seq(max(sapply(key_ext, length)))))
+          colnames(key_ext) <- paste("key_ext", 1:ncol(key_ext), sep="")
+      }
 
       # get rid of POS tags if there are any in the extended context
       left_ext <- gsub("<.*?>", "", left_ext)
       right_ext <- gsub("<.*?>", "", right_ext)
+      key_ext <- gsub("<.*?>", "", key_ext)
+
 
       # add to KWIC
       if(length(left_ext) == length(right_ext) & length(left_ext) == nrow(kwic)) {
         kwic$left_ext <- left_ext
         kwic$right_ext <- right_ext
+
+	kwic <- cbind(kwic, key_ext)
       }
+
 
     }
 
