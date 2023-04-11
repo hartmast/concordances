@@ -16,7 +16,7 @@
 #' TXT export files, but they sometimes also occur in the concordance text.
 #' @param verbose Boolean: If TRUE (the default), the function will display occasional
 #' status updates, which can helpful in the case of large files.
-#' @return A KWIC data frame or a KWIC csv sheet.
+#' @return A KWIC data frame.
 
 getNSE <- function(filename, xml, tags, context_tags, verbose = TRUE) {
 
@@ -298,12 +298,12 @@ getNSE <- function(filename, xml, tags, context_tags, verbose = TRUE) {
     colnames(kwic)[(l+1):(l+la)] <- paste0("Tag", 1:la, "_Left", sep = "")
 
     # fill columns: left
-    for(j in 1:la) {
+    for(j in 1:(la)) {
       kwic[, l+j] <- sapply(1:nrow(kwic), function(i) paste_anno(kwic$Left[i], j))
     }
 
     # strip tags from Left column
-    kwic$Left <- kwic$Left1_Key
+    kwic$Left <- kwic$Tag1_Left
 
 
     # add columns: right
@@ -316,13 +316,13 @@ getNSE <- function(filename, xml, tags, context_tags, verbose = TRUE) {
       cat("processing tags in the context columns ... \n")
     }
 
-    # fill columns: left
+    # fill columns: right
     for(j in 1:la) {
       kwic[, l+j] <- sapply(1:nrow(kwic), function(i) paste_anno(kwic$Right[i], j))
     }
 
     # strip tags from Left column
-    kwic$Right <- kwic$Right1_Key
+    kwic$Right <- kwic$Tag2_Key
 
 
     # reorder columns
