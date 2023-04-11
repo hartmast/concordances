@@ -322,7 +322,7 @@ getNSE <- function(filename, xml, tags, context_tags, verbose = TRUE) {
     }
 
     # strip tags from Left column
-    kwic$Right <- kwic$Tag2_Key
+    kwic$Right <- kwic$Tag1_Right
 
 
     # reorder columns
